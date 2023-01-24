@@ -1,0 +1,14 @@
+# Compilation
+target/
+
+# Dependency locks
+Cargo.lock
+
+# Python tools
+__pycache__/
+*.py[cod]
+*$py.class
+
+#
+# System-specific files
+#

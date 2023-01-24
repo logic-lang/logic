@@ -1,0 +1,49 @@
+on: [push, pull_request]
+
+name: CI
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: 
+          - ubuntu-latest
+          - windows-latest
+          - macOS-latest
+        toolchain:
+          - nightly
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          profile: minimal
+          override: true
+          components: clippy, rustfmt
+
+      - name: Testing
+        uses: actions-rs/cargo@v1
+        with:
+          # Build & Run ->
+          # unit and integration/examples tests
+          command: test
+          # with optional features
+          args: --all-features
+      - name: Checking
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-features
+      - name: Documenting
+        uses: actions-rs/cargo@v1       
+        with:
+          command: doc
+          args: --all-features
+      - name: Formatting
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check

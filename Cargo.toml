@@ -1,0 +1,47 @@
+[package]
+name = "logic-lang"
+version = "0.0.1"
+description = "structural logic based on equivalence graphs"
+authors = ["hrkz <hugo.frezat@gmail.com>"]
+
+keywords = ["logic", "rewriting", "equivalence", "graph"]
+edition = "2021"
+license = "MIT"
+readme = "README.md"
+
+homepage = "https://logic-lang.github.io"
+repository = "https://github.com/logic-lang/logic/"
+
+[features]
+default = []
+
+# Parsing, validation and generation of symbolic expressions (terms).
+logic_lang = []
+
+[dependencies]
+rustc-hash = "1.1.0"
+
+[lib]
+name = "logic"
+
+[[bin]]
+name = "logic"
+path = "bin/main.rs"
+
+[[example]]
+name = "logic_functional"
+path = "examples/func.rs"
+test = true
+[[example]]
+name = "logic_elementary"
+path = "examples/elem.rs"
+test = true
+[[example]]
+name = "logic_boolean"
+path = "examples/bool.rs"
+test = true
+
+[package.metadata.docs.rs]
+features = [
+  "logic_lang",
+]
