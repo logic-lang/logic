@@ -29,15 +29,15 @@ name = "logic"
 path = "bin/main.rs"
 
 [[example]]
-name = "logic_functional"
+name = "logic-functional"
 path = "examples/func.rs"
 test = true
 [[example]]
-name = "logic_elementary"
+name = "logic-elementary"
 path = "examples/elem.rs"
 test = true
 [[example]]
-name = "logic_boolean"
+name = "logic-boolean"
 path = "examples/bool.rs"
 test = true
 

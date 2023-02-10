@@ -6,8 +6,8 @@
 
 **structural logic based on equivalence graphs**
 
-[![Crate](https://img.shields.io/crates/v/logic-lang?style=flat-square)](https://crates.io/crates/logic-lang)
 [![License](https://img.shields.io/github/license/logic-lang/logic.svg?color=informational&style=flat-square)](https://github.com/logic-lang/logic/blob/master/LICENSE)
+[![Crate](https://img.shields.io/crates/v/logic-lang?style=flat-square)](https://crates.io/crates/logic-lang)
 [![Docs](https://img.shields.io/docsrs/logic-lang?style=flat-square&logo=docsdotrs)](https://docs.rs/logic-lang)
 [![Build](https://img.shields.io/github/actions/workflow/status/logic-lang/logic/ci.yml?branch=main&style=flat-square&logo=githubactions)](https://github.com/logic-lang/logic/actions)
 
@@ -40,4 +40,3 @@ An extensive tutorial is currently under construction, but you can still read th
 * [Blog](#blog)
 * [Tutorial](#usage)
 * [Citing](#citing)
-
