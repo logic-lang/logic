@@ -1,6 +1,6 @@
 [package]
 name = "logic-lang"
-version = "0.0.1"
+version = "0.0.2"
 description = "structural logic based on equivalence graphs"
 authors = ["hrkz <hugo.frezat@gmail.com>"]
 
