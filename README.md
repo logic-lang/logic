@@ -6,7 +6,7 @@
 
 **structural logic based on equivalence graphs**
 
-[![License](https://img.shields.io/github/license/logic-lang/logic.svg?color=informational&style=flat-square)](https://github.com/logic-lang/logic/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/logic-lang/logic?color=informational&style=flat-square)](https://github.com/logic-lang/logic/blob/master/LICENSE)
 [![Crate](https://img.shields.io/crates/v/logic-lang?style=flat-square)](https://crates.io/crates/logic-lang)
 [![Docs](https://img.shields.io/docsrs/logic-lang?style=flat-square&logo=docsdotrs)](https://docs.rs/logic-lang)
 [![Build](https://img.shields.io/github/actions/workflow/status/logic-lang/logic/ci.yml?branch=main&style=flat-square&logo=githubactions)](https://github.com/logic-lang/logic/actions)
@@ -33,6 +33,9 @@ Lowering expressions to index-based *hir* then allows for **matching and substit
 ## Getting started
 
 An extensive tutorial is currently under construction, but you can still read the [documentation](https://docs.rs/logic-lang) for the latest version or browse the sources.
+
+It is recommanded to use *nightly* Rust but Logic should build just fine on *stable* (MSRV 1.69).
+The standard cargo `fmt`, `clippy`, `test` and `bench` workflow is available.
 
 #### Try the [web demo](https://logic-lang.github.io/) running on WebAssembly.
 

@@ -1,60 +1,53 @@
+//! Equivalence graph and expression Ids.
+
 use crate::ty::Type;
 
 use rustc_hash::FxHashMap;
 use std::fmt;
 use std::hash::Hash;
+use std::marker::PhantomData;
 use std::mem;
+use std::ops::Index;
 
-/// A unique high-level-representation Id to an expression `Type`.
+/// A unique high-level-representation Id to an expression [`Type`].
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
-pub struct HirId(pub usize);
+pub struct HirId(usize);
 
-/// A class of equivalent `Type` expressions.
+/// A class of equivalent [`Type`] expressions.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct HirClass {
-  pub nodes: Vec<HirId>,
+  nodes: Vec<HirId>,
 }
 
-/// A context maintaining equivalence between `Type` expressions.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HirCtx<T>
-where
-  T: Type,
-{
+/// A graph maintaining equivalence between [`Type`] expressions.
+#[derive(Default, Debug, Clone)]
+pub struct Graph<T, K> {
   /// A map indexed on an IR `Type` arena.
-  pub ty_map: Vec<T>,
+  ty_map: Vec<K>,
   /// A map from IR `Type` to unique `HirId`.
-  pub id_map: FxHashMap<T, HirId>,
+  id_map: FxHashMap<K, HirId>,
+  /// A temporary placeholder.
+  holder: PhantomData<T>,
   /// A quotient space of equivalence classes.
-  pub qspace: FxHashMap<HirId, HirClass>,
+  qspace: FxHashMap<HirId, HirClass>,
   /// A union-find equivalence structure.
-  pub parent: Vec<HirId>,
+  parent: Vec<HirId>,
 }
 
-impl<T> HirCtx<T>
+impl<T, K> Graph<T, K>
 where
-  T: Type<Node = HirId>,
+  T: Type<Term<HirId> = K>,
+  K: Clone + Eq + Hash,
 {
-  /// Constructs a new, empty `HirCtx<T>`.
+  /// Constructs a new, empty [`Graph`].
   pub fn new() -> Self {
     Self {
       ty_map: Vec::new(),
       id_map: FxHashMap::default(),
+      holder: PhantomData,
       qspace: FxHashMap::default(),
       parent: Vec::new(),
     }
-  }
-
-  /// Check if two expressions are equivalent.
-  pub fn is_equivalent(
-    // class(lhs) = class(rhs)
-    &mut self,
-    lhs: T,
-    rhs: T,
-  ) -> bool {
-    let lhs_id = self.insert(lhs);
-    let rhs_id = self.insert(rhs);
-    self.find(lhs_id) == self.find(rhs_id)
   }
 
   /// Find the root (minimal) equivalent expression.
@@ -73,7 +66,7 @@ where
     }
   }
 
-  pub fn search(
+  pub(crate) fn _search(
     // cur_id < n
     &self,
     mut cur_id: HirId,
@@ -86,38 +79,6 @@ where
     }
 
     cur_id
-  }
-
-  /// Insert an expression and return its unique Id.
-  pub fn insert(
-    // expr ∈ graph: id
-    // expr ∉ graph: n + 1
-    &mut self,
-    expr: T,
-  ) -> HirId {
-    let expr = self.canonalize(expr);
-    if let Some(cur_id) = self.id_map.get(&expr).cloned() {
-      self.find(cur_id)
-    } else {
-      self.new_id(expr)
-    }
-  }
-
-  fn new_id(
-    // expr ∉ graph
-    &mut self,
-    expr: T,
-  ) -> HirId {
-    let next_id = HirId(self.ty_map.len());
-    // ty_map = { 0 -> x_0, ... , n -> x_n, n + 1 -> x_ }
-    self.ty_map.push(expr.clone());
-    // id_map = { x_0 -> 0, ... , x_n -> n, x_ -> n + 1 }
-    self.id_map.insert(expr, next_id);
-    // qspace = { 0 ⊃ { 0, ..., n } }
-    self.qspace.insert(next_id, HirClass { nodes: vec![next_id] });
-    // parent(n + 1) = n + 1
-    self.parent.push(next_id);
-    next_id
   }
 
   /// Merge two expressions by their union.
@@ -161,7 +122,7 @@ where
 
   /// Propagate congruence relations.
   pub fn rebuild(
-    // ∀ expr: id
+    // ∀ ty: id
     &mut self,
   ) {
     loop {
@@ -171,7 +132,7 @@ where
         if let Some(cid) = self.id_map.get(&cexpr) {
           if self
             .union(
-              // id = expr ∈ graph
+              // id = ty ∈ graph
               *cid, id, true,
             )
             .is_some()
@@ -181,7 +142,7 @@ where
         } else {
           self.id_map.insert(cexpr.clone(), id);
           self.id_map.remove(&std::mem::replace(
-            // id = cong(expr)
+            // id = cong(ty)
             &mut self.ty_map[id.0],
             cexpr,
           ));
@@ -199,22 +160,74 @@ where
     }
   }
 
-  fn canonalize(
+  /// Instantiate an expression from IR.
+  pub fn inst(
     // cur_id < n
+    &self,
+    cur_id: HirId,
+  ) -> T {
+    T::from_ty(T::map(self[cur_id].clone(), |sub| self.inst(sub)))
+  }
+
+  /// Lower an expression into IR.
+  pub fn lower(
+    // ∀ expr: id
     &mut self,
     expr: T,
-  ) -> T {
-    expr.map(|node| self.find(node))
+  ) -> HirId {
+    let hir_ty = T::map(expr.into_ty(), |sub| self.lower(sub));
+    self.insert(
+      hir_ty, // ty ∈ graph
+    )
+  }
+
+  /// Insert an expression and return its unique Id.
+  pub(crate) fn insert(
+    // ty ∈ graph: id
+    // ty ∉ graph: n + 1
+    &mut self,
+    ty: K,
+  ) -> HirId {
+    let ty = self.canonalize(ty);
+    if let Some(cur_id) = self.id_map.get(&ty).cloned() {
+      self.find(cur_id)
+    } else {
+      self.new_id(ty)
+    }
+  }
+
+  fn new_id(
+    // ty ∉ graph
+    &mut self,
+    ty: K,
+  ) -> HirId {
+    let next_id = HirId(self.ty_map.len());
+    // ty_map = { 0 -> x_0, ... , n -> x_n, n + 1 -> x_ }
+    self.ty_map.push(ty.clone());
+    // id_map = { x_0 -> 0, ... , x_n -> n, x_ -> n + 1 }
+    self.id_map.insert(ty, next_id);
+    // qspace = { 0 ⊃ { 0, ..., n } }
+    self.qspace.insert(next_id, HirClass { nodes: vec![next_id] });
+    // parent(n + 1) = n + 1
+    self.parent.push(next_id);
+    next_id
+  }
+
+  fn canonalize(
+    // parent(ty) ∈ graph
+    &mut self,
+    ty: K,
+  ) -> K {
+    T::map(ty, |node| self.find(node))
   }
 }
 
-impl<T> Default for HirCtx<T>
-where
-  T: Type<Node = HirId>,
-{
-  /// Creates an empty `HirCtx<T>`.
-  fn default() -> Self {
-    Self::new()
+impl<T, K> Index<HirId> for Graph<T, K> {
+  /// Index on a [`HirId`] type.
+  type Output = K;
+
+  fn index(&self, id: HirId) -> &Self::Output {
+    &self.ty_map[id.0]
   }
 }
 
@@ -230,7 +243,10 @@ impl HirClass {
   }
 }
 
-impl<H: Type<Node = HirId> + fmt::Debug> fmt::Display for HirCtx<H> {
+impl<T, K> fmt::Display for Graph<T, K>
+where
+  K: fmt::Debug,
+{
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     writeln!(f, "hir")?;
     for (parent, class) in &self.qspace {
@@ -242,10 +258,10 @@ impl<H: Type<Node = HirId> + fmt::Debug> fmt::Display for HirCtx<H> {
       }
     }
 
+    // stats
     write!(
-      // stats
       f,
-      "\n\
+      "\
       {} expressions \n\
       {} classes     \n",
       self.id_map.len(),
