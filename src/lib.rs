@@ -3,14 +3,12 @@
 //!
 //! Logic is a modern *structural logic* library based on equivalence graphs.
 //!
-//! It allows defining a **(term-based) language** as a generic abstract syntax
-//! tree (AST) associated with **rewriting rules** expressing *equivalence relations*.
+//! It allows defining a **(term-based) language** as an abstract syntax tree (AST) associated with **rewriting rules** expressing *equivalence relations*.
 //!
 //! ![Example](https://logic-lang.github.io/assets/img/logic-example.png)
 //! > *Transformation of an AST using predefined rewriting rules*.
 //!
-//! There are three stages in a logic setup, which are analogies to intermediate
-//! representations (IR) in translation systems.
+//! There are three stages in a logic setup, which are analogies to intermediate representations (IR) in translation systems.
 //! Hierarchically, they depend on each other:
 //!
 //! 1. [`logic_cir`] is the top-level *rewriting* algorithm.
@@ -19,9 +17,8 @@
 //!
 //! #### HIR (high-level IR)
 //!
-//! Expressions are lowered to an index-based representation that only exists
-//! in an equivalence graph. At this stage, it is possible to *test for equivalence*
-//! and *simplify terms* based on a cost function.
+//! Expressions are lowered to an index-based representation that only exists in an equivalence graph.
+//! At this stage, it is possible to *test for equivalence* and *simplify terms* based on a cost function.
 //!
 //! #### MIR (mid-level IR)
 //!
@@ -30,19 +27,17 @@
 //!
 //! #### CIR (ctx-level IR)
 //!
-//! Finally, matches can be applied automatically to the equivalence graph
-//! using *equality saturation*. This is the basis of the rewriting algorithm.
+//! Finally, matches can be applied automatically to the equivalence graph using *equality saturation*.
+//! This is the basis of the rewriting algorithm.
 //!
 //! ### Extension ideas
 //!
-//! Minimizing rule sets and determining if a rewriting system is terminating through
-//! graph algorithms might be investigated in the future.
+//! Minimizing rule sets and determining if a rewriting system is terminating through graph algorithms might be investigated in the future.
 //!
 //! # A tour of the logic library
-//! 
-//! The crate documentation also aims to provide important informations about the state of the project and 
-//! some (planned) additional features.
-//! 
+//!
+//! The crate documentation also aims to provide important informations about the state of the project and some (planned) additional features.
+//!
 //! ### State: experiment
 //!
 //! * The public API is constantly evolving and substantial changes are expected prior to stable releases (x.0.0).

@@ -16,9 +16,8 @@
 ---
 
 Logic is a modern *structural logic* library based on equivalence graphs.
-It allows defining a **(term-based) language** as a generic abstract syntax tree (AST) associated with **rewriting rules** expressing *equivalence relations*.
-Lowering expressions to index-based *hir* then allows for **matching and substituting** the current representation using equality saturation.
-**Minimizing** rule sets or determining if a rewriting system is **terminating** through graph algorithms might be investigated in the future.
+It allows defining a **(term-based) language** as an abstract syntax tree (AST) associated with **rewriting rules** expressing *equivalence relations*. 
+Applying rules using equality saturation is performed by a three-stages process based on different "intermediate representations (IRs)".
 
 ---
 
@@ -32,7 +31,8 @@ Lowering expressions to index-based *hir* then allows for **matching and substit
 
 ## Getting started
 
-An extensive tutorial is currently under construction, but you can still read the [documentation](https://docs.rs/logic-lang) for the latest version or browse the sources.
+An extensive tutorial is currently under construction, but you can still read the [documentation](https://docs.rs/logic-lang) for the latest version 
+or browse the sources.
 
 It is recommanded to use *nightly* Rust but Logic should build just fine on *stable* (MSRV 1.69).
 The standard cargo `fmt`, `clippy`, `test` and `bench` workflow is available.
