@@ -1,6 +1,6 @@
 [package]
 name = "logic-lang"
-version = "0.0.1"
+version = "0.0.2"
 description = "structural logic based on equivalence graphs"
 authors = ["hrkz <hugo.frezat@gmail.com>"]
 
@@ -29,16 +29,16 @@ name = "logic"
 path = "bin/main.rs"
 
 [[example]]
-name = "logic-functional"
-path = "examples/func.rs"
+name = "bool"
+path = "examples/bool.rs"
 test = true
 [[example]]
-name = "logic-elementary"
+name = "elem"
 path = "examples/elem.rs"
 test = true
 [[example]]
-name = "logic-boolean"
-path = "examples/bool.rs"
+name = "prog"
+path = "examples/prog.rs"
 test = true
 
 [package.metadata.docs.rs]
