@@ -1,17 +1,9 @@
-<div align="center">
-
-# logic 
-
-![Example](https://logic-lang.github.io/assets/img/logic-example.png)
-
-**structural logic based on equivalence graphs**
+![Example](https://logic-lang.github.io/assets/img/logic-logo.png)
 
 [![License](https://img.shields.io/github/license/logic-lang/logic?color=informational&style=flat-square)](https://github.com/logic-lang/logic/blob/master/LICENSE)
 [![Crate](https://img.shields.io/crates/v/logic-lang?style=flat-square)](https://crates.io/crates/logic-lang)
 [![Docs](https://img.shields.io/docsrs/logic-lang?style=flat-square&logo=docsdotrs)](https://docs.rs/logic-lang)
 [![Build](https://img.shields.io/github/actions/workflow/status/logic-lang/logic/ci.yml?branch=main&style=flat-square&logo=githubactions)](https://github.com/logic-lang/logic/actions)
-
-</div>
 
 ---
 
